@@ -1,0 +1,43 @@
+# Virtual Environments (CRITICAL to ignore)
+venv/
+.venv/
+env/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*
+
+# Git folder
+.git/
+
+# User Uploads and Binary Files (AI shouldn't read raw image bytes)
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.pdf
+
+# Downloaded ML Models / Caches (SentenceTransformers, spaCy)
+.cache/
+huggingface/
+*.bin
+*.pt
+*.pth
+*.onnx
+
+# IDE and OS specific files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
