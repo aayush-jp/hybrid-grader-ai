@@ -70,6 +70,10 @@ const justificationEl  = document.getElementById("justification");
 const finalScoreTextEl = document.getElementById("final-score-text");
 const scoreRingEl      = document.getElementById("score-ring");
 const llmScorePill     = document.getElementById("llm-score-pill");
+const downloadBtn      = document.getElementById("download-btn");
+
+/** Stores the most recent FinalEvaluationResponse for JSON download. */
+let lastEvaluationResult = null;
 
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
@@ -165,6 +169,7 @@ form.addEventListener("submit", async (e) => {
 
     /** @type {FinalEvaluationResponse} */
     const data = await response.json();
+    lastEvaluationResult = data;
     renderResults(data);
     showPanel("results");
 
@@ -300,3 +305,22 @@ function formatBytes(bytes) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
+
+// ─── Download JSON Report ─────────────────────────────────────────────────────
+
+downloadBtn.addEventListener("click", () => {
+  if (!lastEvaluationResult) return;
+
+  const json = JSON.stringify(lastEvaluationResult, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href     = url;
+  a.download = `evaluation-report-${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
