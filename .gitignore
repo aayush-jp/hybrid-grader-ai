@@ -56,4 +56,5 @@ target/
 
 # Misc
 *.tmp
-*.bak
+*.bak.env
+*.env
