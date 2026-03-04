@@ -1,9 +1,10 @@
 from dotenv import load_dotenv
 
-load_dotenv()  # ✅ Load .env file before anything else
+load_dotenv()  # Load .env before any other imports touch os.getenv
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from api.routers import evaluation
 
@@ -21,10 +22,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# API routes must be registered BEFORE the static-files catch-all mount so
+# that /api/v1/* paths are always resolved by the router first.
 app.include_router(evaluation.router, prefix="/api/v1", tags=["Evaluation"])
 
-
-@app.get("/", tags=["Health"])
-async def health_check() -> dict[str, str]:
-    """Health check endpoint to verify the service is running."""
-    return {"status": "ok", "service": "Hybrid Grader AI"}
+# Serve the frontend. html=True makes StaticFiles return index.html for
+# directory requests (i.e. visiting http://localhost:8000/ loads the UI).
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
